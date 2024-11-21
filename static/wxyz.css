@@ -1,0 +1,73 @@
+/* Root selects the <html> tag */
+:root {
+    /* Variables */
+    --background-color: #fff;
+    --text-color: #272727;
+    --primary-color: #ff6f61;
+
+    /* Donated Styles/ */
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        Segoe UI,
+        Roboto,
+        Oxygen,
+        Ubuntu,
+        Cantarell,
+        Fira Sans,
+        Droid Sans,
+        Helvetica Neue,
+        sans-serif;
+    font-family: var(--body-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-size: 16px;
+
+    /* <html> Styles */
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+/* Set all elements to border-box */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+}
+
+a {
+    text-decoration-line: none;
+    color: inherit;
+}
+
+ul,
+li {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+button {
+    background: none;
+    color: inherit;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    outline: inherit;
+}
+
+body {
+    margin: 40px;
+}
+
+.valve-button {
+    background-color: rgb(41, 95, 209);
+    border-radius: 5px;
+    margin: 24px;
+    padding: 12px 24px;
+    color: var(--background-color);
+}
