@@ -1,6 +1,6 @@
 {
   "tasks": {
-    "dev": "deno run --watch --allow-all main.js"
+    "dev": "deno run --allow-all main.js"
   },
   "imports": {
     "@hono/hono": "jsr:@hono/hono@^4.6.11"
