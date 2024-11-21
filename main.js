@@ -1,52 +1,35 @@
 import { Hono } from "@hono/hono";
 import { serveStatic } from "@hono/hono/deno";
-import { cache } from "@hono/hono/cache";
+
+// // Init function that fixes problem where first command does nothing/
+// // Requires more research to figure out why.
+//
+() => {
+  const initNumber = new Uint8Array([0]);
+  Deno.writeFileSync("/dev/cu.usbmodem2101", initNumber);
+  Deno.readFile("/dev/cu.usbmodem2101");
+
+  const encoder = new TextEncoder();
+  const data = encoder.encode("1");
+
+  Deno.writeFile("/dev/cu.usbmodem2101", data);
+  Deno.readFile("/dev/cu.usbmodem2101");
+};
 
 const app = new Hono();
 
 app.use("/*", serveStatic({ root: "./static" }));
 
-app.get(
-  "*",
-  cache({
-    cacheControl: "max-age=31536000",
-    wait: true,
-  }),
-);
+app.get("/", serveStatic({ root: "./" }));
 
-app.get(
-  "/",
-  serveStatic({ root: "./" }),
-  cache({
-    cacheControl: "max-age=31536000",
-    wait: true,
-  }),
-);
+app.post("/s-one/", async (c) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode("1");
 
-// // Init function that fixes problem where first command does nothing/
-// // Requires more research to figure out why.
-() => {
-  const initNumber = new Uint8Array([0]);
-  Deno.writeFileSync("/dev/cu.usbmodem2101", initNumber);
+  // await Deno.writeFile("/dev/cu.usbmodem2101", data);
   Deno.readFile("/dev/cu.usbmodem2101");
-};
+
+  console.log(await Deno.writeFile("/dev/cu.usbmodem2101", data));
+});
 
 Deno.serve(app.fetch);
-
-// const getInput = () => {
-//   const valvepos = prompt("Enter valve input.\n Input Value: ");
-
-//   if (valvepos === "exit") {
-//     Deno.exit();
-//   }
-
-//   const encoder = new TextEncoder();
-//   const data = encoder.encode(valvepos);
-
-//   Deno.writeFile("/dev/cu.usbmodem2101", data);
-//   Deno.readFile("/dev/cu.usbmodem2101");
-
-//   getInput();
-// };
-
-// getInput();
