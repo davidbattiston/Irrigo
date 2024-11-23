@@ -1,16 +1,6 @@
 import { Hono } from "@hono/hono";
 import { serveStatic } from "@hono/hono/deno";
 
-// // Init function that fixes problem where first command does nothing/
-// // Requires more research to figure out why.
-//
-() => {
-  console.log("Init ran");
-  const initNumber = new Uint8Array([0]);
-  Deno.writeFileSync("/dev/cu.usbmodem2101", initNumber);
-  Deno.readFile("/dev/cu.usbmodem2101");
-};
-
 const app = new Hono();
 
 app.use("/*", serveStatic({ root: "./static" }));
@@ -18,6 +8,11 @@ app.use("/*", serveStatic({ root: "./static" }));
 app.get("/", async (c) => {
   serveStatic({ root: "./" });
   console.log("Init ran");
+
+  // // Init function that fixes problem where first command does nothing/
+  // // Requires more research to figure out why.
+  //
+
   const initNumber = new Uint8Array([0]);
   await Deno.writeFile("/dev/cu.usbmodem2101", initNumber);
   Deno.readFile("/dev/cu.usbmodem2101");
