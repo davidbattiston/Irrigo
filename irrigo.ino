@@ -33,7 +33,7 @@ void loop()
         s_one.write(90);
         s_one_pos = 90;
       }
-
+    Serial.write("1A");
     }
 
     if (input == '2')
@@ -46,6 +46,7 @@ void loop()
         s_two.write(90);
         s_two_pos = 90;
       }
+    Serial.write("2A");
 
     }
 
