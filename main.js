@@ -16,7 +16,7 @@ let deviceState = {};
 
   const decoder = new TextDecoder();
 
-  let buffer = ""; // Holds incomplete data from the stream
+  let buffer = ""; // Holds incomplete data from the readable stream
 
   for await (const chunk of file.readable) {
     buffer += decoder.decode(chunk); // Append the chunk to the buffer
@@ -52,10 +52,6 @@ let deviceState = {};
       buffer = "";
     }
   }
-
-  // for await (const chunk of file.readable) {
-  //   console.log(decoder.decode(chunk));
-  // }
 })();
 
 const encoder = new TextEncoder();

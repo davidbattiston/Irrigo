@@ -11,6 +11,7 @@ int servo1position = 0;
 int servo2position = 0;
 int servo1timeElapsed = 0;
 int servo2timeElapsed = 0;
+unsigned long totalElapsedTime = 0;
 
 
 void setup() 
@@ -29,6 +30,8 @@ void setup()
 
 void writeDeviceState()
 {
+  getTime();
+
   StaticJsonDocument<256> doc;
 
     doc["sensor1"] = sensor1;
@@ -37,8 +40,14 @@ void writeDeviceState()
     doc["servo2position"] = servo2position;
     doc["servo1timeElapsed"] = servo1timeElapsed;
     doc["servo2timeElapsed"] = servo2timeElapsed;
+    doc["totalElapsedTime"] = totalElapsedTime;
 
   serializeJsonPretty(doc, Serial);
+}
+
+void getTime()
+{
+  totalElapsedTime = millis();
 }
 
 void loop()
@@ -47,6 +56,16 @@ void loop()
   if (Serial.available() > 0) {
 
     byte input = Serial.read();
+
+    if (sensor1 == 1 ) {
+        s_one.write(90);
+        servo1position = 90;
+    }
+
+    if (sensor2 == 1 ) {
+        s_two.write(90);
+        servo2position = 90;
+    }
 
     if (input == '1')
     {
