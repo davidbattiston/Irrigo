@@ -57,3 +57,12 @@ document.getElementById("myForm").addEventListener("submit", function (event) {
   // Send the JSON data
   xhr.send(JSON.stringify(jsonData));
 });
+
+function myFunction() {
+  const element = document.getElementById("usage");
+
+  // Simulate a click event
+  element.click();
+}
+
+setInterval(myFunction, 10000); // 5000 milliseconds = 5 seconds

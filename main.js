@@ -58,7 +58,7 @@ let ozPerSecond = 1.098;
 
 const valveOne = async () => {
   const file = await Deno.open("/dev/cu.usbmodem101", {
-    read: false,
+    read: true,
     write: true,
   });
 
@@ -70,7 +70,7 @@ const valveOne = async () => {
 
 const valveTwo = async () => {
   const file = await Deno.open("/dev/cu.usbmodem101", {
-    read: false,
+    read: true,
     write: true,
   });
 
@@ -92,12 +92,6 @@ app.get("/", (c) => {
 
 app.post("/s-one/", async (c) => {
   valveOne();
-
-  setTimeout(async () => {
-    valveOne();
-    console.log("20 second command");
-    // Simulating second command
-  }, 20000); // 20,000 milliseconds = 20 seconds
 
   return new Response("Actuate Valve One");
 });
@@ -129,7 +123,7 @@ app.post("/s-four/", async (c) => {
 
 app.post("/s-three/", async (c) => {
   const file = await Deno.open("/dev/cu.usbmodem101", {
-    read: false,
+    read: true,
     write: true,
   });
   const writer = file.writable.getWriter();
@@ -138,7 +132,7 @@ app.post("/s-three/", async (c) => {
   file.close();
 
   return new Response(
-    `Water used: ${((deviceState.totalElapsedTime / 1000) * ozPerSecond).toFixed(2)} Oz`,
+    `Water Used: ${((deviceState.totalElapsedTime / 1000) * ozPerSecond).toFixed(2)} Oz`,
   );
 });
 
