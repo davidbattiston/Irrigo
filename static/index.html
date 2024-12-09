@@ -13,7 +13,7 @@
     <body>
         <header></header>
         <main>
-            <h1>Rainline - Water Distribution</h1>
+            <h1>Rainline - Water Distribution | <span id="clock"></span></h1>
             <h2>Chris Dowd, David Battiston, and William Vickers</h2>
 
             <div>
@@ -22,17 +22,19 @@
                     hx-post="/s-one/"
                     hx-trigger="click"
                 >
-                    Valve 1
+                    Actuate Valve One
                 </button>
                 <button
                     class="valve-button"
                     hx-post="/s-two/"
                     hx-trigger="click"
                 >
-                    Valve 2
+                    Actuate Valve Two
                 </button>
             </div>
         </main>
         <footer>&copy; 2024</footer>
     </body>
 </html>
+
+<script src="/clock.js"></script>

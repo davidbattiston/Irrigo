@@ -2,9 +2,10 @@ import { Hono } from "@hono/hono";
 import { serveStatic } from "@hono/hono/deno";
 
 let deviceState = {};
+let gallonsPerSecond = 0.00853;
 
 (async () => {
-  const file = await Deno.open("/dev/cu.usbmodem2101", {
+  const file = await Deno.open("/dev/cu.usbmodem101", {
     read: true,
     write: true,
   });
@@ -54,6 +55,18 @@ let deviceState = {};
   }
 })();
 
+const valveOne = async () => {
+  const file = await Deno.open("/dev/cu.usbmodem101", {
+    read: false,
+    write: true,
+  });
+
+  const writer = file.writable.getWriter();
+  await writer.write(encoder.encode("1"));
+
+  file.close();
+};
+
 const encoder = new TextEncoder();
 
 const app = new Hono();
@@ -65,21 +78,19 @@ app.get("/", (c) => {
 });
 
 app.post("/s-one/", async (c) => {
-  const file = await Deno.open("/dev/cu.usbmodem2101", {
-    read: false,
-    write: true,
-  });
+  valveOne();
 
-  const writer = file.writable.getWriter();
-  await writer.write(encoder.encode("1"));
+  setTimeout(async () => {
+    valveOne();
+    console.log("20 second command");
+    // Simulating second command
+  }, 20000); // 20,000 milliseconds = 20 seconds
 
-  file.close();
-
-  return new Response("Servo One Triggered");
+  return new Response("Actuate Valve One");
 });
 
 app.post("/s-two/", async (c) => {
-  const file = await Deno.open("/dev/cu.usbmodem2101", {
+  const file = await Deno.open("/dev/cu.usbmodem101", {
     read: false,
     write: true,
   });
@@ -88,7 +99,7 @@ app.post("/s-two/", async (c) => {
 
   file.close();
 
-  return new Response("Servo Two Triggered");
+  return new Response("Actuate Valve Two");
 });
 
 Deno.serve(app.fetch);
