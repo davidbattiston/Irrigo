@@ -4,8 +4,8 @@
 Servo s_one;
 Servo s_two;
 
-// int sensor1 = 0;
-// int sensor2 = 0;
+int sensor1 = 0;
+int sensor2 = 0;
 int servo1position = 100;
 int servo2position = 100;
 int servo1timeElapsed = 0;
@@ -33,10 +33,10 @@ void writeDeviceState()
 {
   getTime();
 
-  StaticJsonDocument<256> doc;
+  StaticJsonDocument<512> doc;
 
-    // doc["sensor1"] = sensor1;
-    // doc["sensor2"] = sensor2;
+    doc["sensor1"] = sensor1;
+    doc["sensor2"] = sensor2;
     doc["servo1position"] = servo1position;
     doc["servo2position"] = servo2position;
     doc["servo1timeElapsed"] = servo1timeElapsed;
@@ -54,23 +54,24 @@ void getTime()
 void loop()
 {
 
-
   // //Sensor Loop
+    sensor1 = analogRead(A0);
+    sensor2 = analogRead(A1);
+
+    if (sensor1 > 500 ) {
+        s_one.write(100);
+        servo1position = 100;
+    }
+
+    if (sensor2 > 500 ) {
+        s_two.write(100);
+        servo2position = 100;
+        
+    }
 
   if (Serial.available() > 0) {
 
     byte input = Serial.read();
-
-    // if (sensor1 == 1 ) {
-    //     s_one.write(93);
-    //     servo1position = 93;
-    // }
-
-    // if (sensor2 == 1 ) {
-    //     s_two.write(90);
-    //     servo2position = 90;
-        
-    // }
 
     if (input == '1')
     {
@@ -97,6 +98,13 @@ void loop()
       }
     writeDeviceState();
 
+    }
+
+    if(input == '3')
+    {
+      Serial.println("Servo 1 and 2 positions, servo 1 is first");
+      Serial.println(servo1position);
+      Serial.println(servo2position);
     }
 
   }
