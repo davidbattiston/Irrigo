@@ -8,8 +8,10 @@ int sensor1 = 0;
 int sensor2 = 0;
 int servo1position = 100;
 int servo2position = 100;
-int servo1timeElapsed = 0;
-int servo2timeElapsed = 0;
+unsigned long servo1start = 0;
+unsigned long servo1end = 0;
+unsigned long servo2start = 0;
+unsigned long servo2end = 0;
 unsigned long totalElapsedTime = 0;
 
 
@@ -31,24 +33,15 @@ void setup()
 
 void writeDeviceState()
 {
-  getTime();
-
   StaticJsonDocument<512> doc;
 
     doc["sensor1"] = sensor1;
     doc["sensor2"] = sensor2;
     doc["servo1position"] = servo1position;
     doc["servo2position"] = servo2position;
-    doc["servo1timeElapsed"] = servo1timeElapsed;
-    doc["servo2timeElapsed"] = servo2timeElapsed;
     doc["totalElapsedTime"] = totalElapsedTime;
 
   serializeJsonPretty(doc, Serial);
-}
-
-void getTime()
-{
-  totalElapsedTime = millis();
 }
 
 void loop()
@@ -61,12 +54,15 @@ void loop()
     if (sensor1 > 500 ) {
         s_one.write(100);
         servo1position = 100;
+        servo1end = millis();
+        totalElapsedTime = totalElapsedTime + (servo1end - servo1start);
     }
 
     if (sensor2 > 500 ) {
         s_two.write(100);
         servo2position = 100;
-        
+        servo2end = millis();
+        totalElapsedTime = totalElapsedTime + (servo2end - servo2start);
     }
 
   if (Serial.available() > 0) {
@@ -78,10 +74,13 @@ void loop()
       if (servo1position == 100 ) {
         s_one.write(0);
         servo1position = 0;
+        servo1start = millis();
 
       } else if (servo1position == 0 ) {
         s_one.write(100);
         servo1position = 100;
+        servo1end = millis();
+        totalElapsedTime = totalElapsedTime + (servo1end - servo1start);
       }
     writeDeviceState();
     }
@@ -91,20 +90,19 @@ void loop()
       if (servo2position == 100 ) {
         s_two.write(0);
         servo2position = 0;
+        servo2start = millis();
 
       } else if (servo2position == 0 ) {
         s_two.write(100);
         servo2position = 100;
+        servo2end = millis();
+        totalElapsedTime = totalElapsedTime + (servo2end - servo2start);
       }
     writeDeviceState();
-
     }
 
-    if(input == '3')
-    {
-      Serial.println("Servo 1 and 2 positions, servo 1 is first");
-      Serial.println(servo1position);
-      Serial.println(servo2position);
+    if (input == '3') {
+      writeDeviceState();
     }
 
   }

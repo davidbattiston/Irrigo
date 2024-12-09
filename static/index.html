@@ -31,6 +31,24 @@
                 >
                     Actuate Valve Two
                 </button>
+                <button
+                    class="valve-button"
+                    hx-post="/s-three/"
+                    hx-trigger="click"
+                >
+                    Water Used:
+                </button>
+            </div>
+            <div>
+                <form id="myForm">
+                    <label for="hours">Hours:</label>
+                    <input type="number" id="hours" name="hours" required />
+                    <br /><br />
+                    <label for="minutes">Minute:</label>
+                    <input type="number" id="minutes" name="minutes" required />
+                    <br /><br />
+                    <button type="submit">Submit</button>
+                </form>
             </div>
         </main>
         <footer>&copy; 2024</footer>

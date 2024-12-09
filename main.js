@@ -3,6 +3,7 @@ import { serveStatic } from "@hono/hono/deno";
 
 let deviceState = {};
 let gallonsPerSecond = 0.00853;
+let ozPerSecond = 1.098;
 
 (async () => {
   const file = await Deno.open("/dev/cu.usbmodem101", {
@@ -67,6 +68,18 @@ const valveOne = async () => {
   file.close();
 };
 
+const valveTwo = async () => {
+  const file = await Deno.open("/dev/cu.usbmodem101", {
+    read: false,
+    write: true,
+  });
+
+  const writer = file.writable.getWriter();
+  await writer.write(encoder.encode("2"));
+
+  file.close();
+};
+
 const encoder = new TextEncoder();
 
 const app = new Hono();
@@ -90,16 +103,43 @@ app.post("/s-one/", async (c) => {
 });
 
 app.post("/s-two/", async (c) => {
+  valveTwo();
+
+  return new Response("Actuate Valve Two");
+});
+
+app.post("/s-four/", async (c) => {
+  const body = await c.req.json();
+  // console.log(body);
+  const now = new Date();
+  const targetTime = new Date();
+
+  targetTime.setHours(parseInt(body.hours), parseInt(body.minutes), 0, 0);
+
+  // If the target time is in the past, set it for the next day
+  if (targetTime <= now) {
+    targetTime.setDate(targetTime.getDate() + 1);
+  }
+
+  const delay = targetTime - now;
+
+  setTimeout(valveTwo, delay);
+  return new Response();
+});
+
+app.post("/s-three/", async (c) => {
   const file = await Deno.open("/dev/cu.usbmodem101", {
     read: false,
     write: true,
   });
   const writer = file.writable.getWriter();
-  await writer.write(encoder.encode("2"));
+  await writer.write(encoder.encode("3"));
 
   file.close();
 
-  return new Response("Actuate Valve Two");
+  return new Response(
+    `Water used: ${((deviceState.totalElapsedTime / 1000) * ozPerSecond).toFixed(2)} Oz`,
+  );
 });
 
 Deno.serve(app.fetch);
